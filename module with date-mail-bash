@@ -1,0 +1,76 @@
+
+#import this module into other python scripts and you can retrieve date, send mail and execute unix commands etc
+#!/usr/bin/python
+import time
+import smtplib
+import shelve
+from subprocess import PIPE,Popen
+import subprocess
+
+
+class myMail:
+        def mysendMail(self,from_addr,to_addr,subj,body):
+                self.from_addr=from_addr
+                self.to_addr=to_addr
+                self.subj=subj
+                self.body=body
+                self.message='From: %s \n' %self.from_addr + 'To: %s \n' %self.to_addr + 'Subject: %s \n' %self.subj + self.body
+                print(self.message)
+                mail_obj=smtplib.SMTP('localhost')
+                mail_obj.set_debuglevel(1)
+                mail_obj.sendmail(self.from_addr,self.to_addr,self.message)
+                mail_obj.quit()
+
+
+
+
+class myDate:
+        def dateandtime(self,input):
+                self.input=input
+                if self.input.lower() == 'hour':
+                        return time.strftime('%H')
+                elif self.input.lower() == "minute":
+                        return time.strftime('%M')
+                elif self.input.lower() == "month":
+                        return time.strftime('%m')
+                elif self.input.lower() == "year":
+                        return time.strftime('%Y')
+                elif self.input.lower() == "day":
+                        return time.strftime('%d')
+                elif self.input.lower() == "today":
+                        return time.strftime('%D')
+                else:
+                        raise Exception('You have not given the right input! please say hour, minute, month, year or today')
+
+
+class properties:
+        def get_properties(self,option):
+                try:
+                        shv=shelve.open('<path>/properties.db')
+                        for itr1 in shv.keys():
+                                if itr1 == option:
+                                        return shv[itr1]
+
+                except Exception,e:
+                        print ('Something went wrong while retrieving data '+ str(e))
+
+
+
+class mycommand:
+        def execute(self,cmd):
+                p = subprocess.Popen(cmd,shell=True,stdout=PIPE,stderr=PIPE)
+                (out, err) = p.communicate()
+                return (out, err)
+
+### this 
+
+if __name__ == '__main__':
+        mail_obj=myMail()
+        mail_obj.mysendMail('testuser@test.com','rakesh.vadlakunta@company.com','test Mail Subject','Hello this goes in the mail body')
+
+        date_obj=myDate()
+        print('The current hour is ---- %s '%date_obj.dateandtime('hour'))
+        print('Today is ---- %s '%date_obj.dateandtime('day'))
+        
+        
+        
