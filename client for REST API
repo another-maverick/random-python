@@ -1,0 +1,28 @@
+
+
+# If the REST API returns a json object, use json.loads() to make a dictionary out of it and parse through it
+# requests and json modules need to be imprted
+# HTTP Digest AuthN is different from basic auth - here client and server agree on a number and entries are transported by MD5 Hash
+#   server gets the pwd from DB, hashes it and compares both hases to validate
+
+import requests
+import json
+from requests.auth import HTTPDigestAuth
+url = "http://test-URL/uri"
+
+response=request.get(url,auth=HTTPDigestAuth(username(raw_input("Enter username:")),raw_input("Enter password:")),verify=True)
+
+if(response.OK):
+# For successful API call, response code will be 200 (OK)
+  dict_data=json.loads(response.content)
+  print('The response has {0} length'.format(len(dict_data)))
+  for key, val in dict_data.iteritems():
+    print key val
+  for j in dict_data.keys():
+    print j , dict_data[j]
+ 
+    
+else:
+  # If response code is not ok (200), print the resulting http error code with description
+    response.raise_for_status()
+   
