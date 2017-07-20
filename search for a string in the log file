@@ -1,0 +1,9 @@
+import re
+import os
+pattern=re.compile(r'.*8888888$',re.I)
+ptr=open('<path of the file>','r')
+ptr_write=open('/tmp/testlog','a')
+for line in ptr.readlines():
+...     if(pattern.search(line)):
+...             print line
+...             ptr_write.write(line)
