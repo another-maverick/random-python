@@ -1,0 +1,141 @@
+## creates a shelve db file where you can store name and value pairs
+## Also lists the entries
+
+
+
+
+import shelve
+
+
+
+print('Enter the number of properties you would like to add \n')
+
+num=raw_input().strip()
+
+for i in range(int(num)):
+
+        print('Enter the name of the property that you would like to add \n')
+        name=raw_input().strip().lower()
+
+        print('Enter the value of the property that you would like to add \n')
+        value=raw_input().strip().lower()
+
+
+        try:
+                shv = shelve.open('properties.db')
+                shv[name]=value
+                shv.close()
+        except Exception,e:
+                print ('Something went wrong while adding entry'+ str(e))
+        else:
+                print ('the entry for %s has been created \n'%name)
+
+
+
+
+
+'''
+Retrieve objects from the DB
+'''
+
+def entries(option):
+        try:
+                shv=shelve.open('properties.db')
+#                for obj in shv.keys():
+#                        print('the name and value pair is Name: %s and Value:%s'%(obj,shv[obj]))
+        except Exception,e:
+                print ('Something went wrong while retrieving data'+ str(e))
+
+#       finally:
+#               shv.close()
+        if option == 'item':
+                return shv.items()
+        elif option == 'names':
+                return shv.keys()
+
+
+
+'''
+List the entries
+'''
+
+def list_entries():
+        print('Do you wish to view the properties ? Yes or no')
+
+        choice=raw_input().strip()
+        try:
+
+                if choice.lower() == 'yes':
+                        out=entries('item')
+                        print(out)
+
+                elif choice.lower() == 'no':
+                        print('Okay, exiting!')
+                        exit()
+
+                else:
+                        print('Looks like you do not want to retrieve the contents, exiting !')
+                        exit()
+
+        except Exception,e:
+                print ('Entries could not be listed'+ str(e))
+
+
+
+'''
+Remove entries from db
+'''
+
+print ('Do you wish to delete or update an entry ? Please say delete or update. Here are the entries. Please enter update or delete')
+
+
+current_list=entries('names')
+print(current_list)
+
+select=raw_input().strip()
+
+if not (select.lower() == 'update' or select.lower() == 'delete') :
+        print('It appears, you don\'t want to update or delete!')
+        list_entries()
+#       exit()
+
+elif select.lower() == 'update':
+        print ('Please enter the entry you want to update')
+        updated_entry=raw_input().strip()
+        if updated_entry.lower() not in current_list:
+                print('You have selected an incorrect entry -- %s, exiting !' %updated_entry)
+                list_entries()
+                exit()
+
+        else:
+                print('Enter the value that needs to be updated \n')
+                updated_value=raw_input().strip()
+                try:
+                        shv = shelve.open('properties.db')
+                        shv[updated_entry]=updated_value
+                        shv.close()
+                except Exception,e:
+                        print ('Something went wrong while updating entry'+ str(e))
+                else:
+                        print ('the entry for %s has been updated' %updated_entry)
+                        list_entries()
+
+
+
+elif select.lower() == 'delete':
+        print ('Please enter the entry you want to delete')
+        deleted_entry=raw_input().strip()
+        if deleted_entry.lower() not in current_list:
+                print('You have selected an incorrect entry -- %s, exiting !' %deleted_entry)
+                exit()
+
+        else:
+                try:
+                        shv = shelve.open('properties.db')
+                        del shv[deleted_entry]
+                        shv.close()
+                except Exception,e:
+                        print ('Something went wrong while deleting the entry'+ str(e))
+                else:
+                        print ('the entry for %s has been deleted' %deleted_entry)
+                        list_entries()
