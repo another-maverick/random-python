@@ -1,0 +1,107 @@
+#https://realpython.com/blog/python/api-integration-in-python/
+
+import requests
+
+resp = requests.get('https://todolist.example.com/tasks/')
+if resp.status_code != 200:
+    # This means something went wrong.
+    raise ApiError('GET /tasks/ {}'.format(resp.status_code))
+for todo_item in resp.json():
+    print('{} {}'.format(todo_item['id'], todo_item['summary']))
+
+
+###############################
+task = {"summary": "Take out trash", "description": "" }
+resp = requests.post('https://todolist.example.com/tasks/', json=task)
+if resp.status_code != 201:
+    raise ApiError('POST /tasks/ {}'.format(resp.status_code))
+print('Created task. ID: {}'.format(resp.json()["id"]))
+
+###########################################
+Notice that:
+
+requests sensibly provides a function called post, which does an HTTP POST. Dear lord, why can’t all HTTP libraries be this sane.
+The post function takes a json argument, whose value here is a Python dictionary (task).
+Per the API spec and REST best practices, we know the task is created because of the 201 response code.
+Now, since we are using JSON as our data format, we were able to take a nice shortcut here: the json argument to post. If we use that, requests will do the following for us:
+
+Convert that into a JSON representation string, a la json.dumps(), and
+Sets the requests’ content type to "application/json" (by adding an HTTP header).
+
+###########################################
+# The shortcut.
+resp = requests.post('https://todolist.example.com/tasks/', json=task)
+# The equivalent longer version.
+resp = requests.post('https://todolist.example.com/tasks/',
+                     data=json.dumps(task),
+                     headers={'Content-Type':'application/json'},
+                     
+##############################################
+#Constructing An API Library
+ what are some of the things it allows us to do?
+
+We can get a summary list of tasks that need to be done.
+We can get much more detailed information about a specific task.
+We can add a new task to our todo list.
+We can mark a task as done.
+We can modify an existing task - changing its description, etc.
+
+# todo.py
+def get_tasks():
+    pass
+def describe_task(task_id):
+    pass
+def add_task(summary, description=""):
+    pass
+def task_done(task_id):
+    pass
+def update_task(task_id, summary, description):
+    pass
+    
+   ##############################################
+   
+   def _url(path):
+    return 'https://todo.example.com' + path
+    
+    import requests
+
+def get_tasks():
+    return requests.get(_url('/tasks/'))
+
+def describe_task(task_id):
+    return requests.get(_url('/tasks/{:d}/'.format(task_id)))
+
+def add_task(summary, description=""):
+    return requests.post(_url('/tasks/'), json={
+        'summary': summary,
+        'description': description,
+        })
+
+def task_done(task_id):
+    return requests.delete(_url('/tasks/{:d}/'.format(task_id)))
+
+def update_task(task_id, summary, description):
+    url = _url('/tasks/{:d}/'.format(task_id))
+    return requests.put(url, json={
+        'summary': summary,
+        'description': description,
+        })
+        
+        
+        ################################################
+        
+        import todo
+
+resp = todo.add_task("Take out trash")
+if resp.status_code != 201:
+    raise ApiError('Cannot create task: {}'.format(resp.status_code))
+print('Created task. ID: {}'.format(resp.json()["id"]))
+
+resp = todo.get_tasks()
+if resp.status_code != 200:
+    raise ApiError('Cannot fetch all tasks: {}'.format(resp.status_code))
+for todo_item in resp.json():
+    print('{} {}'.format(todo_item['id'], todo_item['summary']))
+    
+    
+    
