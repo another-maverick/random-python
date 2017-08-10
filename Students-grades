@@ -1,0 +1,44 @@
+class Subject(object):
+	def __init__(self):
+		self._grades = []
+		
+	def report_grades(self,grade,weight):
+		self_grades.append(Grade(grade,weight))
+		
+	def average_grade(self):
+		total, total_weight = 0,0
+		for grades in self._grades:
+			total += grades.grade * weight
+			total_weight += grades.weight
+		return total/total_weight
+		
+		
+		
+		
+		
+class Student(object):
+	def __init__(self):
+		self._subjects={}
+		
+	def subject(self,name):
+		if name not in self._subjects:
+			self._subjects[name] = Subject()
+			
+		return self._subjects[name]
+		
+	def average_grade(self):
+		total,count =0,0
+		for subj in self._subjects.values():
+			total += subj.average_grade()
+			count += 1
+		return total/count
+		
+class Gradebook(object):
+	def __init__(self):
+		self._students={}
+		
+	def student(self,name):
+		if name not in self._students:
+			self._students[name] = Student()
+		return self._students[name]
+		
