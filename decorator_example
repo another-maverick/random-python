@@ -1,0 +1,22 @@
+import functools
+
+
+def my_decorator_with_args(**args):
+	def my_decorator(func):
+		@functools.wraps(func)
+		def this_fn_runs():
+			print "I am now going to execute the function that calls this decorator"
+			func()
+			print "I am now going to execute my own stuff"
+			print "from teh decorator"
+		return this_fn_runs
+	return my_decorator
+		
+			
+@my_decorator_with_args("argument passed from calling fn")
+def my_own_fn():
+	print "Heyyyy"
+	
+my_own()
+
+
