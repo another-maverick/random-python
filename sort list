@@ -1,0 +1,21 @@
+#!/usr/bin/python
+
+my_list=[3,2,6,7,4,1,9,5]
+my_list_length=len(my_list)
+res=[]
+
+
+def find_lowest(my_lst):
+        lowest = my_lst[0]
+        for j in range(1,len(my_lst)):
+                if my_lst[j] <= lowest:
+                        lowest = my_lst[j]
+
+        return lowest
+
+for k in range(my_list_length):
+        res.append(find_lowest(my_list))
+        my_list.remove(find_lowest(my_list))
+
+
+print "sorted list is FINALLY %s "%res
