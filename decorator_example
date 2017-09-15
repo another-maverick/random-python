@@ -1,3 +1,6 @@
+##In the context of design patterns, decorators dynamically alter the functionality of a function, method or class without having to directly use subclasses. 
+##This is ideal when you need to extend the functionality of functions that you don't want to modify.
+
 import functools
 
 
